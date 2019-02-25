@@ -129,7 +129,6 @@ void shownum(bint n)
             ptr=ptr->next;
         }
         p2=trav;
-        printf("\n");
         while (p2)
         {
             printf("%d",p2->data);
@@ -138,6 +137,7 @@ void shownum(bint n)
         DeleteList(trav);
 
     }
+    printf("\n");
    
 }
 
@@ -240,6 +240,8 @@ bint subtract(bint n1,bint n2,int l)
     p=res.start;
     while (p&&p->data==0) {
         p=p->next;
+    }if (p==NULL) {
+        printf("0\n");
     }
     while (p)
     {
@@ -302,31 +304,86 @@ bint mult(bint n1,bint n2)
 
 }
 
-
-int main()
+int initialise(bint *n1,bint *n2,int *sign1,int *sign2)
 {
-    bint num1,num2;
+  
     char s1[310],s2[310];
     int big;
     printf("enter the first number \n");
     scanf("%s",s1);
-    num1=getnum(s1);
+    *n1=getnum(&s1[1]);
     printf("enter the second number\n");
     scanf("%s",s2);
-    num2=getnum(s2);
-    big=isgreater(s1, s2);
+    *n2=getnum(&s2[1]);
+    big=isgreater(&s1[1], &s2[1]);
+    if (s1[0]=='+')
+    {
+        *sign1=1;
+    }else
+    {
+        *sign1=0;
+    }
+    if (s2[0]=='+')
+    {
+        *sign2=1;
+    }else
+    {
+        *sign2=0;
+    }
+    return big;
+}
+
+
+int main()
+{
+    bint num1,num2;
+    int big,sign1,sign2;
+    big=initialise(&num1, &num2,&sign1,&sign2);
     printf("first num is \n");
     shownum(num1);
     printf("second num is \n");
     shownum(num2);
     printf("addition is \n");
-    shownum(addnum(num1, num2));
-    
+    if (sign2==sign1)
+    {
+        if (sign2==0) {
+            printf("-");
+        }
+        shownum(addnum(num1, num2));
+    }
+    else if (sign1!=sign2)
+    {
+        if ((sign1==0&&big==1)||(sign2==0&&big==2))
+        {
+            printf("-");
+        }
+        subtract(num1, num2, big);
+    }
     printf("subtraction \n");
-    subtract(num1, num2,big);
+    if (sign2==sign1)
+    {
+        if ((big==2&&sign2==1)||(big==1&&sign1==0))
+        {
+            printf("-");
+        }
+          subtract(num1, num2, big);
+    }
+    else if(sign2!=sign1)
+    {
+        if (sign1==0)
+        {
+            printf("-");
+        }
+        shownum(addnum(num1, num2));
+    }
+    printf("\n");
     printf("multiplication \n");
-    shownum(mult(num1, num2));
-
+    if (sign2!=sign1)
+    {
+        printf("-");
+       
+    } shownum(mult(num1, num2));
+    
     
     
     return 0;
